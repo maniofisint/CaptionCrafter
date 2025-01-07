@@ -61,7 +61,7 @@ def generate_news_image(
     # Select the appropriate base image based on the number of events
     # The base image is selected based on the number of events (up to 3) to match the design layout.
     event_count = len(todays_events.splitlines()) if todays_events.strip() else 0
-    base_image_path = f"Base/Base{min(event_count, 3)}.png"
+    base_image_path = f"Base{min(event_count, 3)}.png"
     base_image = Image.open(base_image_path)
     draw = ImageDraw.Draw(base_image)
 
@@ -74,13 +74,13 @@ def generate_news_image(
     base_image.paste(user_image, user_image_position)
 
     # Load fonts
-    title_font = ImageFont.truetype("Font/A Nafis.ttf", title_font_size)
-    content_font = ImageFont.truetype("Font/Titr_Stancil-Old.ttf", content_font_size)
-    slogan_font = ImageFont.truetype("Font/A Nafis.ttf", slogan_font_size)
-    event_font = ImageFont.truetype("Font/Font/A Nafis.ttf", event_font_size)
-    weekday_font = ImageFont.truetype("Font/A Nafis.ttf", weekday_font_size)
-    shamsi_day_font = ImageFont.truetype("Font/A Nafis.ttf", shamsi_day_font_size)
-    miladi_date_font = ImageFont.truetype("Font/Poppins-Regular.ttf", 14)
+    title_font = ImageFont.truetype("A Nafis.ttf", title_font_size)
+    content_font = ImageFont.truetype("Titr_Stancil-Old.ttf", content_font_size)
+    slogan_font = ImageFont.truetype("A Nafis.ttf", slogan_font_size)
+    event_font = ImageFont.truetype("A Nafis.ttf", event_font_size)
+    weekday_font = ImageFont.truetype("A Nafis.ttf", weekday_font_size)
+    shamsi_day_font = ImageFont.truetype("A Nafis.ttf", shamsi_day_font_size)
+    miladi_date_font = ImageFont.truetype("Poppins-Regular.ttf", 14)
 
     # Function to reshape and reorder Farsi text
     def prepare_farsi_text(text):
