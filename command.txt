@@ -1,7 +1,0 @@
-docker push maniofisint/telegram-bot:latest 
-docker login
-docker tag telegram-bot maniofisint/telegram-bot:latest
-docker logs telegram-bot-container                     
-docker run -d --name telegram-bot-container telegram-bot
-docker build -t telegram-bot . 
-docker run -it --name debug-telegram-bot telegram-bot bash

@@ -26,4 +26,4 @@ COPY . .
 
 
 # Command to run the application
-CMD ["python", "bot.py"]
+CMD ["python", "bot2.py"]

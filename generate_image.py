@@ -3,6 +3,8 @@ from datetime import datetime, timedelta
 from khayyam import JalaliDatetime
 import arabic_reshaper
 from convertdate import islamic
+from bidi.algorithm import get_display
+
 
 def hijri_date_from_gregorian(gregorian_date):
     """
@@ -85,7 +87,8 @@ def generate_news_image(
     # Function to reshape and reorder Farsi text
     def prepare_farsi_text(text):
         reshaped_text = arabic_reshaper.reshape(text)
-        return reshaped_text
+        bidi_text = get_display(reshaped_text)
+        return bidi_text
 
     # Prepare dates
     future_date = datetime.now() + timedelta(days=days_into_future)
@@ -131,8 +134,8 @@ def generate_news_image(
 
     # Prepare Farsi text
     title = prepare_farsi_text(title)
-    main_content = prepare_farsi_text(main_content)
-    slogan = prepare_farsi_text(slogan)
+    # main_content = prepare_farsi_text(main_content)
+    # slogan = prepare_farsi_text(slogan)
 
     # Draw title
     title_bbox = draw.textbbox((0, 0), title, font=title_font)
