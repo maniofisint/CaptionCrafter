@@ -77,7 +77,7 @@ def generate_news_image(
 
     # Load fonts
     title_font = ImageFont.truetype("BNazanin.ttf", title_font_size)
-    content_font = ImageFont.truetype("BNazanin.ttf", content_font_size)
+    content_font = ImageFont.truetype("Ray-ExtraBlack.ttf", content_font_size)
     slogan_font = ImageFont.truetype("A Nafis.ttf", slogan_font_size)
     event_font = ImageFont.truetype("A Nafis.ttf", event_font_size)
     weekday_font = ImageFont.truetype("A Nafis.ttf", weekday_font_size)
