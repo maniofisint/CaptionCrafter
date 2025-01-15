@@ -6,7 +6,6 @@ import datetime  # Import datetime for date and time manipulation.
 from PIL import Image
 import telegram
 
-
 TOKEN = '8056950160:AAGIF7ColbOQH5wF6lhWC2HNAib5mb624K8'  # Telegram bot token.
 
 # Logging configuration
@@ -19,7 +18,7 @@ logger = logging.getLogger(__name__)  # Create a logger instance.
 # Token بات
 
 # مراحل گفتگو
-IMAGE, TITLE, CONTENT, SLOGAN, SLOGAN_CUSTOM, DATE, FUTURE_DAYS, EVENTS, FONT_SIZES, CUSTOM_FONT_SIZES = range(10)  # Conversation steps.
+AUTH, IMAGE, TITLE, CONTENT, SLOGAN, SLOGAN_CUSTOM, DATE, FUTURE_DAYS, EVENTS, FONT_SIZES, CUSTOM_FONT_SIZES = range(11)  # Conversation steps.
 
 # داده‌های کاربر
 data = {}  # Dictionary to store user-provided data during the conversation.
@@ -27,11 +26,45 @@ data = {}  # Dictionary to store user-provided data during the conversation.
 # Timeout duration (in seconds)
 TIMEOUT = 300  # Define conversation timeout duration.
 
+PASSWORD = "securepassword"  # Set your desired password
+AUTHORIZED_USERS = set()  # Set to store authorized user IDs
+
+
 async def start(update: Update, context: CallbackContext):
     logger.info("User started the bot.")  # Log the start of the conversation.
     context.user_data.clear()  # Clear any previous user data.
+    user_id = update.effective_user.id
+    if user_id not in AUTHORIZED_USERS:
+        await update.message.reply_text("به ربات خوش آمدید! لطفاً رمز بات را ارسال کنید.") 
+        return AUTH
     await update.message.reply_text("به ربات خوش آمدید! لطفاً تصویر خود را ارسال کنید.")  # Welcome message to the user.
     return IMAGE  # Move to the IMAGE step.
+
+async def autherize(update: Update, context: CallbackContext):
+    user_id = update.effective_user.id  # Get the user's unique ID.
+    password = update.message.text  # Get the user's input.
+
+    if not password:
+        logger.warning("Expected text for password but received something else.")  # Log a warning for invalid input.
+        await update.message.reply_text("لطفاً یک پس‌وورد ارسال کنید.")  # Prompt the user to send text.
+        return AUTH  # Stay in the AUTH step.
+
+    logger.info("Password received.")  # Log that a password was received.
+
+    # Check if the password matches
+    if password == PASSWORD:
+        AUTHORIZED_USERS.add(user_id)  # Add the user ID to the authorized set.
+        logger.info(f"User authorized: {user_id}")  # Log the authorization event.
+        await update.message.reply_text(
+            "دسترسی به بات مجاز شد. لطفاً جهت استفاده از ربات /start را ارسال کنید."
+        )  # Notify the user of successful authorization.
+        return ConversationHandler.END  # End the current conversation.
+
+    # Incorrect password case
+    logger.info(f"Incorrect password entered by user: {user_id}.")  # Log the failed attempt.
+    await update.message.reply_text("پس‌وورد ارسالی نادرست است. لطفاً دوباره تلاش کنید.")  # Notify the user.
+    return AUTH  # Stay in the AUTH step.
+
 
 async def receive_image(update: Update, context: CallbackContext):
     if not update.message.photo:  # Check if the message contains a photo.
@@ -240,42 +273,44 @@ async def cancel(update: Update, context: CallbackContext):
     return ConversationHandler.END  # End the conversation.
 
 
-from telegram.ext import Application
-
 
 def main():
     application = Application.builder().token(TOKEN).http_version("1.1").build()
     job_queue = application.job_queue
     job_queue.start()
 
+    # Conversation handler with the AUTH step included
     conv_handler = ConversationHandler(
-    entry_points=[CommandHandler('start', start)],
-    states={
-        IMAGE: [MessageHandler(filters.PHOTO, receive_image)],
-        TITLE: [MessageHandler(filters.TEXT & ~filters.COMMAND, receive_title)],
-        CONTENT: [MessageHandler(filters.TEXT & ~filters.COMMAND, receive_content)],
-        SLOGAN: [
-            MessageHandler(filters.TEXT & filters.Regex('^استفاده از شعار پیش‌فرض$'), receive_slogan),
-            MessageHandler(filters.TEXT & filters.Regex('^وارد کردن شعار دلخواه$'), receive_slogan),
+        entry_points=[CommandHandler('start', start)],
+        states={
+            AUTH: [MessageHandler(filters.TEXT & ~filters.COMMAND, autherize)],  # Authorization step
+            IMAGE: [MessageHandler(filters.PHOTO, receive_image)],  # Handle images
+            TITLE: [MessageHandler(filters.TEXT & ~filters.COMMAND, receive_title)],  # Handle titles
+            CONTENT: [MessageHandler(filters.TEXT & ~filters.COMMAND, receive_content)],  # Handle content
+            SLOGAN: [
+                MessageHandler(filters.TEXT & filters.Regex('^استفاده از شعار پیش‌فرض$'), receive_slogan),
+                MessageHandler(filters.TEXT & filters.Regex('^وارد کردن شعار دلخواه$'), receive_slogan),
+            ],  # Handle slogan options
+            SLOGAN_CUSTOM: [MessageHandler(filters.TEXT & ~filters.COMMAND, receive_custom_slogan)],  # Custom slogan
+            DATE: [
+                MessageHandler(filters.TEXT & filters.Regex("^تاریخ امروز$"), receive_date),
+                MessageHandler(filters.TEXT & ~filters.COMMAND, receive_future_days),
+            ],  # Handle date inputs
+            FUTURE_DAYS: [MessageHandler(filters.TEXT & ~filters.COMMAND, receive_future_days)],  # Future days
+            EVENTS: [MessageHandler(filters.TEXT & ~filters.COMMAND, receive_events)],  # Events
+            FONT_SIZES: [MessageHandler(filters.TEXT & ~filters.COMMAND, receive_font_sizes)],  # Font sizes
+        },
+        fallbacks=[
+            CommandHandler('cancel', cancel),  # Cancel handler
+            MessageHandler(filters.ALL, timeout_handler),  # Timeout fallback
         ],
-        SLOGAN_CUSTOM: [MessageHandler(filters.TEXT & ~filters.COMMAND, receive_custom_slogan)],
-        DATE: [
-            MessageHandler(filters.TEXT & filters.Regex("^تاریخ امروز$"), receive_date),
-            MessageHandler(filters.TEXT & ~filters.COMMAND, receive_future_days),
-        ],
-        FUTURE_DAYS: [MessageHandler(filters.TEXT & ~filters.COMMAND, receive_future_days)],
-        EVENTS: [MessageHandler(filters.TEXT & ~filters.COMMAND, receive_events)],
-        FONT_SIZES: [MessageHandler(filters.TEXT & ~filters.COMMAND, receive_font_sizes)],
-    },
-    fallbacks=[
-        CommandHandler('cancel', cancel),
-        MessageHandler(filters.ALL, timeout_handler),  # Fallback for timeouts
-    ],
-    conversation_timeout=TIMEOUT,
-)
+        conversation_timeout=TIMEOUT,  # Set conversation timeout
+    )
 
-
+    # Add the conversation handler to the application
     application.add_handler(conv_handler)
+
+    # Log and start polling
     logger.info("Bot started.")
     application.run_polling()
 
