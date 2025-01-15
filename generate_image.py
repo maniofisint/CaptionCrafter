@@ -87,8 +87,8 @@ def generate_news_image(
     # Function to reshape and reorder Farsi text
     def prepare_farsi_text(text):
         reshaped_text = arabic_reshaper.reshape(text)
-        bidi_text = get_display(reshaped_text)
-        return bidi_text
+        # bidi_text = get_display(reshaped_text)
+        return reshaped_text
 
     # Prepare dates
     future_date = datetime.now() + timedelta(days=days_into_future)
@@ -104,34 +104,51 @@ def generate_news_image(
 
     # Default positions
     date_positions =  {
-        "weekday": (170, 60),  # Position of the day of the week in Shamsi calendar
-        "shamsi_day": (180, 90),  # Position of the day number in Shamsi calendar
-        "shamsi_month_year": (170, 130),  # Position of the month and year in Shamsi calendar
-        "miladi": (7, 160),  # Position of the Gregorian date
-        "hejri": (155, 163),  # Position of the Hijri (Islamic) date
+        "weekday": (190, 60),  # Position of the day of the week in Shamsi calendar
+        "shamsi_day": (190, 90),  # Position of the day number in Shamsi calendar
+        "shamsi_month_year": (190, 130),  # Position of the month and year in Shamsi calendar
+        "miladi": (70, 160),  # Position of the Gregorian date
+        "hejri": (190, 163),  # Position of the Hijri (Islamic) date
     }
 
     # Draw dates
     # Draw day of the week
+    # Draw weekday (center-aligned)
     weekday_text = prepare_farsi_text(weekday)
-    draw.text(date_positions["weekday"], weekday_text, font=weekday_font, fill="black")
+    weekday_bbox = draw.textbbox((0, 0), weekday_text, font=weekday_font)
+    weekday_width = weekday_bbox[2] - weekday_bbox[0]
+    weekday_x = date_positions["weekday"][0] - (weekday_width // 2)  # Center-align
+    draw.text((weekday_x, date_positions["weekday"][1]), weekday_text, font=weekday_font, fill="black")
 
-    # Draw Shamsi day
+    # Draw Shamsi day (center-aligned)
     shamsi_day_text = prepare_farsi_text(shamsi_day)
-    draw.text(date_positions["shamsi_day"], shamsi_day_text, font=shamsi_day_font, fill="black")
+    shamsi_day_bbox = draw.textbbox((0, 0), shamsi_day_text, font=shamsi_day_font)
+    shamsi_day_width = shamsi_day_bbox[2] - shamsi_day_bbox[0]
+    shamsi_day_x = date_positions["shamsi_day"][0] - (shamsi_day_width // 2)  # Center-align
+    draw.text((shamsi_day_x, date_positions["shamsi_day"][1]), shamsi_day_text, font=shamsi_day_font, fill="black")
 
-    # Draw Shamsi month and year
+    # Draw Shamsi month and year (center-aligned)
     shamsi_month_year_text = prepare_farsi_text(shamsi_month_year)
-    draw.text(date_positions["shamsi_month_year"], shamsi_month_year_text, font=event_font, fill="black")
+    shamsi_month_year_bbox = draw.textbbox((0, 0), shamsi_month_year_text, font=event_font)
+    shamsi_month_year_width = shamsi_month_year_bbox[2] - shamsi_month_year_bbox[0]
+    shamsi_month_year_x = date_positions["shamsi_month_year"][0] - (shamsi_month_year_width // 2)  # Center-align
+    draw.text((shamsi_month_year_x, date_positions["shamsi_month_year"][1]), shamsi_month_year_text, font=event_font, fill="black")
 
-    # Draw Miladi date
+    # Draw Miladi date (center-aligned)
     miladi_text = miladi_date
-    draw.text(date_positions["miladi"], miladi_text, font=miladi_date_font, fill="black")
+    miladi_bbox = draw.textbbox((0, 0), miladi_text, font=miladi_date_font)
+    miladi_width = miladi_bbox[2] - miladi_bbox[0]
+    miladi_x = date_positions["miladi"][0] - (miladi_width // 2)  # Center-align
+    draw.text((miladi_x, date_positions["miladi"][1]), miladi_text, font=miladi_date_font, fill="black")
 
-    # Draw Hejri date
+    
+    # Draw Hejri date (center-aligned)
     hejri_text = hejri_date
-    draw.text(date_positions["hejri"], hejri_text, font=event_font, fill="black")
-
+    hejri_bbox = draw.textbbox((0, 0), hejri_text, font=event_font)
+    hejri_width = hejri_bbox[2] - hejri_bbox[0]
+    hejri_x = date_positions["hejri"][0] - (hejri_width // 2)  # Center-align
+    draw.text((hejri_x, date_positions["hejri"][1]), hejri_text, font=event_font, fill="black")
+        
     # Prepare Farsi text
     title = prepare_farsi_text(title)
     # main_content = prepare_farsi_text(main_content)

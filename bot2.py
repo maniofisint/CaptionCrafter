@@ -205,7 +205,7 @@ async def receive_font_sizes(update: Update, context: CallbackContext):
 
     elif update.message.text == 'انتخاب اندازه دلخواه':
         logger.info("User opted to change font sizes.")  # Log the selection.
-        await update.message.reply_text("لطفاً اندازه فونت تیتر، متن اصلی و شعار را هر کدام در یک خط وارد کنید:")  # Prompt for custom font sizes.
+        await update.message.reply_text("لطفاً اندازه فونت تیتر، متن اصلی و شعار را هر کدام در یک خط وارد کنید. (مقدار پیش‌فرض اندازه فونت تیتر برابر با ۴۰، متن اصلی ۵۰و شعار ۲۵ است.)")  # Prompt for custom font sizes.
         return FONT_SIZES  # Stay in the FONT_SIZES step.
 
     else:
