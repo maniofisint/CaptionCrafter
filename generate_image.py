@@ -87,8 +87,8 @@ def generate_news_image(
     # Function to reshape and reorder Farsi text
     def prepare_farsi_text(text):
         reshaped_text = arabic_reshaper.reshape(text)
-        # bidi_text = get_display(reshaped_text)
-        return reshaped_text
+        bidi_text = get_display(reshaped_text)
+        return bidi_text
 
     # Prepare dates
     future_date = datetime.now() + timedelta(days=days_into_future)
