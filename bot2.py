@@ -26,7 +26,7 @@ data = {}  # Dictionary to store user-provided data during the conversation.
 # Timeout duration (in seconds)
 TIMEOUT = 300  # Define conversation timeout duration.
 
-PASSWORD = "securepassword"  # Set your desired password
+PASSWORD = "securepasswordsecurepassword"  # Set your desired password
 AUTHORIZED_USERS = set()  # Set to store authorized user IDs
 
 
