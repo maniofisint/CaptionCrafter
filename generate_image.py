@@ -190,8 +190,8 @@ def generate_news_image(
             break
 
     # Draw slogan
-    slogan_box_width = 490 - 330
-    slogan_y_offset = 75
+    slogan_box_width = 490 - 299
+    slogan_y_offset = 100
     current_slogan_line = ""
     slogan_lines = []
 
@@ -212,8 +212,8 @@ def generate_news_image(
         line_bbox = draw.textbbox((0, 0), reshaped_line, font=slogan_font)
         line_width = line_bbox[2] - line_bbox[0]
         line_height = line_bbox[3] - line_bbox[1]
-        x_position = 330 + (slogan_box_width - line_width) // 2
-        draw.text((x_position, slogan_y_offset), reshaped_line, font=slogan_font, fill="white")
+        x_position = 300 + (slogan_box_width - line_width) // 2
+        draw.text((x_position, slogan_y_offset), reshaped_line, font=slogan_font, fill=(4, 18, 66))  # Red color
         slogan_y_offset += line_height
         if slogan_y_offset > 130:
             break
@@ -244,7 +244,7 @@ generate_news_image(
     output_path="news_output.png",
     title="بازدهی ۴۰ درصدی گواهی سپرده سکه از ابتدای سال:",
     main_content="نوسان سکه رفاه در حوالی قله و چشم انداز آینده بازار، تحلیلگران رشد بیشتری را پیش بینی می‌کنند.",
-    slogan="زمان اقتصاد، همراه همیشگی شما در دنیای اقتصاد.",
+    slogan="اکنون زمانِ اقتصاد است.",
     user_image_path="input_image.jpg",
     # todays_events="",
     # todays_events="رویداد ۱: افزایش نرخ ارز",
