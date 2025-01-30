@@ -29,7 +29,7 @@ def generate_news_image(
     output_path,
     title,
     main_content,
-    slogan,
+    slogan ,
     user_image_path,
     todays_events="",
     days_into_future=0,
@@ -149,20 +149,19 @@ def generate_news_image(
     hejri_x = date_positions["hejri"][0] - (hejri_width // 2)  # Center-align
     draw.text((hejri_x, date_positions["hejri"][1]), hejri_text, font=event_font, fill="black")
         
-    # Prepare Farsi text
-    title = prepare_farsi_text(title)
-    # main_content = prepare_farsi_text(main_content)
-    # slogan = prepare_farsi_text(slogan)
+    
+    
 
     # Draw title
+    title = prepare_farsi_text(title)
     title_bbox = draw.textbbox((0, 0), title, font=title_font)
     title_width = title_bbox[2] - title_bbox[0]
-    title_position = ((base_image.size[0] - title_width) // 2, 230)
+    title_position = ((base_image.size[0] - title_width) // 2, 390)
     draw.text(title_position, title, font=title_font, fill="black")
 
     # Draw main content
     box_width = 980 - 100
-    y_offset = 285
+    y_offset = 230
     current_line = ""
     lines = []
 
@@ -186,37 +185,43 @@ def generate_news_image(
         x_position = 100 + (box_width - line_width) // 2
         draw.text((x_position, y_offset), reshaped_line, font=content_font, fill="black")
         y_offset += line_height
-        if y_offset > 400:
+        if y_offset > 380:
             break
 
     # Draw slogan
-    slogan_box_width = 505 - 270
-    slogan_y_offset = 95
-    current_slogan_line = ""
-    slogan_lines = []
+    if slogan == "اکنون زمانِ اقتصاد است." :
+        slogan = prepare_farsi_text(slogan)
+        title_position = (300, 100)
+        draw.text(title_position, slogan, font=slogan_font, fill=(4, 18, 66))
 
-    for word in slogan.split():
-        test_line = f"{current_slogan_line} {word}".strip()
-        test_bbox = draw.textbbox((0, 0), test_line, font=slogan_font)
-        test_width = test_bbox[2] - test_bbox[0]
-        if test_width <= slogan_box_width:
-            current_slogan_line = test_line
-        else:
+    else: 
+        slogan_box_width = 505 - 270
+        slogan_y_offset = 95
+        current_slogan_line = ""
+        slogan_lines = []
+
+        for word in slogan.split():
+            test_line = f"{current_slogan_line} {word}".strip()
+            test_bbox = draw.textbbox((0, 0), test_line, font=slogan_font)
+            test_width = test_bbox[2] - test_bbox[0]
+            if test_width <= slogan_box_width:
+                current_slogan_line = test_line
+            else:
+                slogan_lines.append(current_slogan_line)
+                current_slogan_line = word
+        if current_slogan_line:
             slogan_lines.append(current_slogan_line)
-            current_slogan_line = word
-    if current_slogan_line:
-        slogan_lines.append(current_slogan_line)
 
-    for line in slogan_lines:
-        reshaped_line = prepare_farsi_text(line)
-        line_bbox = draw.textbbox((0, 0), reshaped_line, font=slogan_font)
-        line_width = line_bbox[2] - line_bbox[0]
-        line_height = line_bbox[3] - line_bbox[1]
-        x_position = 270 + (slogan_box_width - line_width) // 2
-        draw.text((x_position, slogan_y_offset), reshaped_line, font=slogan_font, fill=(4, 18, 66))  # Red color
-        slogan_y_offset += line_height
-        if slogan_y_offset > 130:
-            break
+        for line in slogan_lines:
+            reshaped_line = prepare_farsi_text(line)
+            line_bbox = draw.textbbox((0, 0), reshaped_line, font=slogan_font)
+            line_width = line_bbox[2] - line_bbox[0]
+            line_height = line_bbox[3] - line_bbox[1]
+            x_position = 270 + (slogan_box_width - line_width) // 2
+            draw.text((x_position, slogan_y_offset), reshaped_line, font=slogan_font, fill=(4, 18, 66))  
+            slogan_y_offset += line_height
+            if slogan_y_offset > 130:
+                break
 
     # Draw today's events
     if todays_events.strip():
@@ -242,7 +247,7 @@ def generate_news_image(
 # Example usage
 generate_news_image(
     output_path="news_output.png",
-    title="بازدهی ۴۰ درصدی گواهی سپرده سکه از ابتدای سال:",
+    title="بازدهی ۴۰ درصدی گواهی سپرده سکه از ابتدای سال",
     main_content="نوسان سکه رفاه در حوالی قله و چشم انداز آینده بازار، تحلیلگران رشد بیشتری را پیش بینی می‌کنند.",
     slogan="اکنون زمانِ اقتصاد است.",
     user_image_path="input_image.jpg",
