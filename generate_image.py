@@ -190,7 +190,7 @@ def generate_news_image(
             break
 
     # Draw slogan
-    slogan_box_width = 490 - 295
+    slogan_box_width = 490 - 280
     slogan_y_offset = 100
     current_slogan_line = ""
     slogan_lines = []
@@ -212,7 +212,7 @@ def generate_news_image(
         line_bbox = draw.textbbox((0, 0), reshaped_line, font=slogan_font)
         line_width = line_bbox[2] - line_bbox[0]
         line_height = line_bbox[3] - line_bbox[1]
-        x_position = 300 + (slogan_box_width - line_width) // 2
+        x_position = 280 + (slogan_box_width - line_width) // 2
         draw.text((x_position, slogan_y_offset), reshaped_line, font=slogan_font, fill=(4, 18, 66))  # Red color
         slogan_y_offset += line_height
         if slogan_y_offset > 130:
