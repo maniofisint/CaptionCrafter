@@ -76,8 +76,8 @@ def generate_news_image(
     base_image.paste(user_image, user_image_position)
 
     # Load fonts
-    title_font = ImageFont.truetype("BNazanin.ttf", title_font_size)
-    content_font = ImageFont.truetype("Ray-ExtraBlack.ttf", content_font_size)
+    title_font = ImageFont.truetype("Ray-ExtraBlack.ttf", content_font_size)
+    content_font = ImageFont.truetype("BNazanin.ttf", title_font_size)
     slogan_font = ImageFont.truetype("A Nafis.ttf", slogan_font_size)
     event_font = ImageFont.truetype("A Nafis.ttf", event_font_size)
     weekday_font = ImageFont.truetype("A Nafis.ttf", weekday_font_size)
@@ -156,12 +156,12 @@ def generate_news_image(
     title = prepare_farsi_text(title)
     title_bbox = draw.textbbox((0, 0), title, font=title_font)
     title_width = title_bbox[2] - title_bbox[0]
-    title_position = ((base_image.size[0] - title_width) // 2, 390)
+    title_position = ((base_image.size[0] - title_width) // 2, 230)
     draw.text(title_position, title, font=title_font, fill="black")
 
     # Draw main content
     box_width = 980 - 100
-    y_offset = 230
+    y_offset = 310
     current_line = ""
     lines = []
 
@@ -185,7 +185,7 @@ def generate_news_image(
         x_position = 100 + (box_width - line_width) // 2
         draw.text((x_position, y_offset), reshaped_line, font=content_font, fill="black")
         y_offset += line_height
-        if y_offset > 380:
+        if y_offset > 400:
             break
 
     # Draw slogan
