@@ -190,7 +190,7 @@ def generate_news_image(
             break
 
     # Draw slogan
-    slogan_box_width =  - 279
+    slogan_box_width = 505 - 279
     slogan_y_offset = 100
     current_slogan_line = ""
     slogan_lines = []
