@@ -109,7 +109,7 @@ async def receive_slogan(update: Update, context: CallbackContext):
         return SLOGAN  # Stay in the SLOGAN step.
 
     if update.message.text == 'استفاده از شعار پیش‌فرض':  # Check if the user chose the default slogan.
-        data['slogan'] = "اکنون زمانِ اقتصاد است."  # Set the default slogan.
+        data['slogan'] = "اکنون زمانِ اقتصاد است!"  # Set the default slogan.
         logger.info("Default slogan selected.")  # Log the default slogan choice.
         reply_markup = ReplyKeyboardMarkup([['تاریخ امروز', 'انتخاب تاریخ آینده']], one_time_keyboard=True)  # Create a keyboard for date selection.
         await update.message.reply_text("شعار ذخیره شد. لطفاً یکی از گزینه‌های زیر را انتخاب کنید:", reply_markup=reply_markup)  # Prompt for date selection.
