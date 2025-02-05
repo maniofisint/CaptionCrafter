@@ -225,8 +225,9 @@ async def receive_font_sizes(update: Update, context: CallbackContext):
 
 async def generate_and_send_image(update: Update, context: CallbackContext):
     logger.info("Generating news image.")  # Log the start of image generation.
+    output_path = "History/Lead:{}, Headline:{}, Date:{}, ID:{}, Time:{}".format(data['title'], data['content'], datetime.datetime.now(), update.effective_user.id, data['date'])
     generate_news_image(
-        output_path='final_image.png',  # Output file path.
+        output_path = output_path,  # Output file path.
         title=data['title'],  # News title.
         main_content=data['content'],  # News content.
         slogan=data['slogan'],  # Slogan.
@@ -238,14 +239,14 @@ async def generate_and_send_image(update: Update, context: CallbackContext):
         slogan_font_size=data.get('slogan_font_size', 25)  # Slogan font size.
     )
     # Open the generated image
-    img = Image.open('final_image.png')
+    img = Image.open(output_path)
     
     # Convert to RGB if necessary
     if img.mode == 'RGBA':
         img = img.convert('RGB')
     
     # Save as final JPEG image
-    img.save('final_image.jpg', 'JPEG')
+    img.save(output_path, 'JPEG')
 
     await update.message.reply_text("تصویر خبر شما ایجاد شد!درحال ارسال...")  # Notify the user that the image is ready.
 
