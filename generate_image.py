@@ -76,24 +76,24 @@ def generate_news_image(
     base_image.paste(user_image, user_image_position)
 
     # Load fonts
-    title_font =     ImageFont.truetype("BNazanin.ttf", title_font_size)
-    content_font = ImageFont.truetype("Ray-ExtraBlack.ttf", content_font_size)
-    slogan_font = ImageFont.truetype("A Nafis.ttf", slogan_font_size)
-    event_font = ImageFont.truetype("A Nafis.ttf", event_font_size)
-    weekday_font = ImageFont.truetype("A Nafis.ttf", weekday_font_size)
-    shamsi_day_font = ImageFont.truetype("A Nafis.ttf", shamsi_day_font_size)
-    miladi_date_font = ImageFont.truetype("Poppins-Regular.ttf", 14)
+    title_font =     ImageFont.truetype("Font/BNazanin.ttf", title_font_size)
+    content_font = ImageFont.truetype("Font/Ray-ExtraBlack.ttf", content_font_size)
+    slogan_font = ImageFont.truetype("Font/A Nafis.ttf", slogan_font_size)
+    event_font = ImageFont.truetype("Font/A Nafis.ttf", event_font_size)
+    weekday_font = ImageFont.truetype("Font/A Nafis.ttf", weekday_font_size)
+    shamsi_day_font = ImageFont.truetype("Font/A Nafis.ttf", shamsi_day_font_size)
+    miladi_date_font = ImageFont.truetype("Font/Poppins-Regular.ttf", 14)
 
     # Function to reshape and reorder Farsi text
-    def prepare_farsi_text(text):
-        reshaped_text = arabic_reshaper.reshape(text)
-        bidi_text = get_display(reshaped_text)
-        return reshaped_text
-
     # def prepare_farsi_text(text):
     #     reshaped_text = arabic_reshaper.reshape(text)
     #     bidi_text = get_display(reshaped_text)
-    #     return bidi_text
+    #     return reshaped_text
+
+    def prepare_farsi_text(text):
+        reshaped_text = arabic_reshaper.reshape(text)
+        bidi_text = get_display(reshaped_text)
+        return bidi_text
     
     # Prepare dates
     future_date = datetime.now() + timedelta(days=days_into_future)
