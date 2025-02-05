@@ -225,7 +225,7 @@ async def receive_font_sizes(update: Update, context: CallbackContext):
 
 async def generate_and_send_image(update: Update, context: CallbackContext):
     logger.info("Generating news image.")  # Log the start of image generation.
-    output_path = "History/Lead:{}, Headline:{}, Date:{}, ID:{}, Time:{}".format(data['title'], data['content'], datetime.datetime.now(), update.effective_user.id, data['date'])
+    output_path = "History/Lead:{}, Headline:{}, Date:{}, ID:{}, Time:{}.png".format(data['title'], data['content'], datetime.datetime.now(), update.effective_user.id, data['date'])
     generate_news_image(
         output_path = output_path,  # Output file path.
         title=data['title'],  # News title.
