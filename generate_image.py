@@ -63,7 +63,7 @@ def generate_news_image(
     # Select the appropriate base image based on the number of events
     # The base image is selected based on the number of events (up to 3) to match the design layout.
     event_count = len(todays_events.splitlines()) if todays_events.strip() else 0
-    base_image_path = f"Base{min(event_count, 3)}.png"
+    base_image_path = f"Base/Base{min(event_count, 3)}.png"
     base_image = Image.open(base_image_path)
     draw = ImageDraw.Draw(base_image)
 
@@ -85,15 +85,15 @@ def generate_news_image(
     miladi_date_font = ImageFont.truetype("Poppins-Regular.ttf", 14)
 
     # Function to reshape and reorder Farsi text
-    # def prepare_farsi_text(text):
-    #     reshaped_text = arabic_reshaper.reshape(text)
-    #     bidi_text = get_display(reshaped_text)
-    #     return reshaped_text
-
     def prepare_farsi_text(text):
         reshaped_text = arabic_reshaper.reshape(text)
         bidi_text = get_display(reshaped_text)
-        return bidi_text
+        return reshaped_text
+
+    # def prepare_farsi_text(text):
+    #     reshaped_text = arabic_reshaper.reshape(text)
+    #     bidi_text = get_display(reshaped_text)
+    #     return bidi_text
     
     # Prepare dates
     future_date = datetime.now() + timedelta(days=days_into_future)
