@@ -76,8 +76,8 @@ def generate_news_image(
     base_image.paste(user_image, user_image_position)
 
     # Load fonts
-    title_font = ImageFont.truetype("Ray-ExtraBlack.ttf", content_font_size)
-    content_font = ImageFont.truetype("BNazanin.ttf", title_font_size)
+    title_font =     ImageFont.truetype("BNazanin.ttf", title_font_size)
+    content_font = ImageFont.truetype("Ray-ExtraBlack.ttf", content_font_size)
     slogan_font = ImageFont.truetype("A Nafis.ttf", slogan_font_size)
     event_font = ImageFont.truetype("A Nafis.ttf", event_font_size)
     weekday_font = ImageFont.truetype("A Nafis.ttf", weekday_font_size)
@@ -85,11 +85,16 @@ def generate_news_image(
     miladi_date_font = ImageFont.truetype("Poppins-Regular.ttf", 14)
 
     # Function to reshape and reorder Farsi text
+    # def prepare_farsi_text(text):
+    #     reshaped_text = arabic_reshaper.reshape(text)
+    #     bidi_text = get_display(reshaped_text)
+    #     return reshaped_text
+
     def prepare_farsi_text(text):
         reshaped_text = arabic_reshaper.reshape(text)
         bidi_text = get_display(reshaped_text)
         return bidi_text
-
+    
     # Prepare dates
     future_date = datetime.now() + timedelta(days=days_into_future)
     miladi_date = future_date.strftime("%d %B %Y")
@@ -151,7 +156,7 @@ def generate_news_image(
         
     
     
-
+   
     # Draw title
     title = prepare_farsi_text(title)
     title_bbox = draw.textbbox((0, 0), title, font=title_font)
@@ -161,7 +166,7 @@ def generate_news_image(
 
     # Draw main content
     box_width = 980 - 100
-    y_offset = 310
+    y_offset = 285
     current_line = ""
     lines = []
 

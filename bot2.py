@@ -22,6 +22,7 @@ AUTH, IMAGE, TITLE, CONTENT, SLOGAN, SLOGAN_CUSTOM, DATE, FUTURE_DAYS, EVENTS, F
 
 # داده‌های کاربر
 data = {}  # Dictionary to store user-provided data during the conversation.
+data['slogan'] = "اکنون زمانِ اقتصاد است." # Default slogan
 
 # Timeout duration (in seconds)
 TIMEOUT = 300  # Define conversation timeout duration.
@@ -76,31 +77,32 @@ async def receive_image(update: Update, context: CallbackContext):
     photo = update.message.photo[-1]  # Get the highest-resolution photo from the message.
     photo_file = await photo.get_file()  # Fetch the photo file.
     await photo_file.download_to_drive('input_image.jpg')  # Save the photo locally.
-    await update.message.reply_text("تصویر دریافت شد. لطفاً عنوان خبر را وارد کنید.")  # Prompt for the news title.
+    await update.message.reply_text("تصویر دریافت شد. لطفاً روتیتر خبر را وارد کنید.")  # Prompt for the news title.
     return TITLE  # Move to the TITLE step.
 
 async def receive_title(update: Update, context: CallbackContext):
     if not update.message.text:  # Check if the message contains text.
         logger.warning("Expected text for title but received something else.")  # Log a warning for invalid input.
-        await update.message.reply_text("لطفاً یک عنوان ارسال کنید.")  # Prompt the user to send text.
+        await update.message.reply_text("لطفاً یک روتیتر ارسال کنید.")  # Prompt the user to send text.
         return TITLE  # Stay in the TITLE step.
 
     data['title'] = update.message.text  # Store the title in the data dictionary.
     logger.info(f"Title received: {data['title']}")  # Log the received title.
-    await update.message.reply_text("عالی! حالا متن اصلی خبر را وارد کنید.")  # Prompt for the main news content.
+    await update.message.reply_text("عالی! حالا تیتر خبر را وارد کنید.")  # Prompt for the main news content.
     return CONTENT  # Move to the CONTENT step.
 
 async def receive_content(update: Update, context: CallbackContext):
     if not update.message.text:  # Check if the message contains text.
         logger.warning("Expected text for content but received something else.")  # Log a warning for invalid input.
-        await update.message.reply_text("لطفاً متن خبر را ارسال کنید.")  # Prompt the user to send text.
+        await update.message.reply_text("لطفاً تیتر خبر را ارسال کنید.")  # Prompt the user to send text.
         return CONTENT  # Stay in the CONTENT step.
 
     data['content'] = update.message.text  # Store the content in the data dictionary.
     logger.info(f"Content received: {data['content']}")  # Log the received content.
-    reply_markup = ReplyKeyboardMarkup([['استفاده از شعار پیش‌فرض', 'وارد کردن شعار دلخواه']], one_time_keyboard=True)  # Create a keyboard for slogan selection.
-    await update.message.reply_text("آیا مایل به استفاده از شعار پیش‌فرض هستید یا می‌خواهید شعار دلخواه وارد کنید؟", reply_markup=reply_markup)  # Prompt for slogan selection.
-    return SLOGAN  # Move to the SLOGAN step.
+    reply_markup = ReplyKeyboardMarkup([['تاریخ امروز', 'انتخاب تاریخ آینده']], one_time_keyboard=True)  # Create a keyboard for date selection.
+    await update.message.reply_text("تیتر خبر ذخیره شد. لطفاً جهت انتخاب تاریخ انتشار خبر یکی از گزینه‌های زیر را انتخاب کنید:", reply_markup=reply_markup)  # Prompt for date selection.
+    return DATE  # Move to the DATE step.
+
 
 async def receive_slogan(update: Update, context: CallbackContext):
     if not update.message.text:  # Check if the message contains text.
@@ -174,9 +176,8 @@ async def receive_events(update: Update, context: CallbackContext):
     if update.message.text == "خیر":  # Check if the user chose not to add events.
         data['todays_events'] = []  # Store an empty list for events.
         logger.info("No events added.")  # Log the selection.
-        reply_markup = ReplyKeyboardMarkup([['استفاده از اندازه پیش‌فرض', 'انتخاب اندازه دلخواه']], one_time_keyboard=True)  # Create a keyboard for font size selection.
-        await update.message.reply_text("آیا مایل به تغییر اندازه فونت‌ها هستید؟", reply_markup=reply_markup)  # Prompt for font size selection.
-        return FONT_SIZES  # Move to the FONT_SIZES step.
+        await generate_and_send_image(update, context)  # Generate and send the image.
+        return ConversationHandler.END  # End the conversation.
     elif update.message.text == "بله":  # Check if the user chose to add events.
         logger.info("User opted to add events.")  # Log the selection.
         await update.message.reply_text("لطفاً رویدادهای روز را هر کدام در یک خط وارد کنید (حداکثر ۳ رویداد):")  # Prompt for event details.
@@ -185,9 +186,8 @@ async def receive_events(update: Update, context: CallbackContext):
         events = update.message.text.splitlines()[:3]  # Split the input into lines and limit to 3 events.
         data['todays_events'] = events  # Store the events.
         logger.info(f"Events received: {events}")  # Log the received events.
-        reply_markup = ReplyKeyboardMarkup([['استفاده از اندازه پیش‌فرض', 'انتخاب اندازه دلخواه']], one_time_keyboard=True)  # Create a keyboard for font size selection.
-        await update.message.reply_text("رویدادها ذخیره شدند. آیا مایل به تغییر اندازه فونت‌ها هستید؟", reply_markup=reply_markup)  # Prompt for font size selection.
-        return FONT_SIZES  # Move to the FONT_SIZES step.
+        await generate_and_send_image(update, context)  # Generate and send the image.
+        return ConversationHandler.END  # End the conversation.
 
 async def receive_font_sizes(update: Update, context: CallbackContext):
     if not update.message.text:  # Check if the message contains text.
@@ -205,7 +205,7 @@ async def receive_font_sizes(update: Update, context: CallbackContext):
 
     elif update.message.text == 'انتخاب اندازه دلخواه':
         logger.info("User opted to change font sizes.")  # Log the selection.
-        await update.message.reply_text("لطفاً اندازه فونت تیتر، متن اصلی و شعار را هر کدام در یک خط وارد کنید. (مقدار پیش‌فرض اندازه فونت تیتر برابر با ۴۰، متن اصلی ۵۰و شعار ۲۵ است.)")  # Prompt for custom font sizes.
+        await update.message.reply_text("لطفاً اندازه فونت تیتر، تیتر و شعار را هر کدام در یک خط وارد کنید. (مقدار پیش‌فرض اندازه فونت تیتر برابر با ۴۰، تیتر ۵۰و شعار ۲۵ است.)")  # Prompt for custom font sizes.
         return FONT_SIZES  # Stay in the FONT_SIZES step.
 
     else:
